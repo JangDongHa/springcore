@@ -2,6 +2,7 @@ package com.sparta.springcore.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -10,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Configuration
 @EnableWebSecurity // 스프링 Security 지원을 가능하게 함
+@EnableGlobalMethodSecurity(securedEnabled = true) // @Secured 활성화
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
@@ -29,7 +31,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
                 // 회원 관리 처리 API (POST /user/**) 에 대해 CSRF 무시
         http.csrf()
-                .ignoringAntMatchers("/user/**");
+                .ignoringAntMatchers("/user/**")
+                .ignoringAntMatchers("/api/products/**");
 
         http.authorizeRequests()
                     // image 폴더를 login 없이 허용
@@ -57,6 +60,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .logout()
                     // 로그아웃 처리 URL
                     .logoutUrl("/user/logout")
-                    .permitAll();
+                    .permitAll()
+                .and()
+                    // 예외 핸들링이 발생하면
+                    .exceptionHandling()
+                    // 접근 불가 페이지로 이동
+                    .accessDeniedPage("/forbidden.html");
     }
 }

@@ -3,8 +3,12 @@ package com.sparta.springcore.controller;
 import com.sparta.springcore.model.Product;
 import com.sparta.springcore.dto.ProductMypriceRequestDto;
 import com.sparta.springcore.dto.ProductRequestDto;
+import com.sparta.springcore.model.UserRoleEnum;
+import com.sparta.springcore.security.UserDetailsImpl;
 import com.sparta.springcore.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import java.sql.*;
 import java.util.List;
@@ -22,8 +26,8 @@ public class ProductController {
 
     // 신규 상품 등록
     @PostMapping("/api/products")
-    public Product createProduct(@RequestBody ProductRequestDto requestDto) throws SQLException {
-        return productService.createService(requestDto);
+    public Product createProduct(@RequestBody ProductRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) throws SQLException {
+        return productService.createService(requestDto, userDetails.getUser().getId());
     }
 
     // 설정 가격 변경
@@ -34,7 +38,15 @@ public class ProductController {
 
     // 등록된 전체 상품 목록 조회
     @GetMapping("/api/products")
-    public List<Product> getProducts() throws SQLException {
-        return productService.listAllService();
+    public List<Product> getProducts(@AuthenticationPrincipal UserDetailsImpl userDetails) throws SQLException {
+        return productService.listAllService(userDetails.getUser().getId());
     }
+
+    // 관리자용(모든 전체상품 조회)
+    @Secured(UserRoleEnum.Authority.ADMIN)
+    @GetMapping("/api/admin/products")
+    public List<Product> getAdminProducts() throws  SQLException {
+        return productService.getAllProducts();
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.sparta.springcore.controller;
 
+import com.sparta.springcore.model.UserRoleEnum;
 import com.sparta.springcore.security.UserDetailsImpl;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -11,6 +12,9 @@ public class HomeController {
     @GetMapping("/")
     public String home(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         model.addAttribute("nickname", userDetails.getUser().getNickname());
+
+        if (userDetails.getUser().getRole() == UserRoleEnum.ADMIN) // 어드민인 경우
+            model.addAttribute("admin_role", true);
         return "index";
     }
 }

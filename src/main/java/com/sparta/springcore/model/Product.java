@@ -34,8 +34,12 @@ public class Product {
     @Column(nullable = false)
     private int myprice;
 
+    @Column(nullable = false)
+    private Long usersId;
+
     // 관심 상품 생성 시 이용합니다.
-    public Product(ProductRequestDto requestDto) {
+    public Product(ProductRequestDto requestDto, Long usersId) {
+        this.usersId = usersId;
         this.title = requestDto.getTitle();
         this.image = requestDto.getImage();
         this.link = requestDto.getLink();

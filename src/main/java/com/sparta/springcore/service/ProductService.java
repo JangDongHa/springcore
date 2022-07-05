@@ -27,8 +27,8 @@ public class ProductService {
 //    }
 
     // 신규 상품 등록
-    public Product createService (ProductRequestDto requestDto) {
-        Product product = new Product(requestDto);
+    public Product createService (ProductRequestDto requestDto, Long usersId) {
+        Product product = new Product(requestDto, usersId);
         return productRepository.save(product);
     }
 
@@ -49,7 +49,12 @@ public class ProductService {
     }
 
     // 상품 리스트 조회
-    public List<Product> listAllService () {
+    public List<Product> listAllService (Long usersId) {
+        return productRepository.findAllByusersId(usersId);
+    }
+
+    // (관리자용) 상품 전체 조회
+    public List<Product> getAllProducts (){
         return productRepository.findAll();
     }
 
