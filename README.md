@@ -1,4 +1,4 @@
-# Spring Study in SpartaCoding
+# Spring Study
 
 ### Spring 심화반 (6/26 ~ 7/31) - JangDongHa
 
